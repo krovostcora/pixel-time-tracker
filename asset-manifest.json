@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/pixel-time-tracker/static/css/main.8f5eb461.css",
+    "main.js": "/pixel-time-tracker/static/js/main.620fc2ea.js",
+    "index.html": "/pixel-time-tracker/index.html",
+    "main.8f5eb461.css.map": "/pixel-time-tracker/static/css/main.8f5eb461.css.map",
+    "main.620fc2ea.js.map": "/pixel-time-tracker/static/js/main.620fc2ea.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8f5eb461.css",
+    "static/js/main.620fc2ea.js"
+  ]
+}
