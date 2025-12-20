@@ -124,6 +124,7 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
 
 Made with 💜 and pixel vibes
 
+<img width="1440" height="860" alt="Screenshot 2025-12-20 at 17 40 09" src="https://github.com/user-attachments/assets/0ce13ccd-f8f0-4b34-a6b9-ae3cffbd5064" />
 <img width="1440" height="900" alt="Screenshot 2025-12-20 at 13 41 38" src="https://github.com/user-attachments/assets/007f81fe-d684-4d9d-9a0f-751701820030" />
 <img width="1440" height="900" alt="Screenshot 2025-12-20 at 13 41 52" src="https://github.com/user-attachments/assets/dd487f8d-fbbd-43af-bf4e-c38f6a6921e5" />
 <img width="1440" height="900" alt="Screenshot 2025-12-20 at 13 42 00" src="https://github.com/user-attachments/assets/22b32746-f65a-4000-91b6-81db8bb3e5dd" />
