@@ -80,7 +80,6 @@ export const useLogs = (user) => {
     const getTotalTimeForLabels = (labelsList) => {
         const total = logs
             .filter(log => {
-                // Перевіряємо чи всі лейбли з поточного завдання є в логі
                 return labelsList.every(label => log.labels.includes(label)) &&
                     labelsList.length === log.labels.length;
             })

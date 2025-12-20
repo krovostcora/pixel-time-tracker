@@ -10,9 +10,9 @@ const LabelManager = ({ labels, onAdd, onDelete, theme, bg, textColor }) => {
     };
 
     return (
-        <div className={`pixel-border p-4 ${bg.secondary} ${theme.border}`}>
-            <h2 className={`pixel-text mb-4 ${theme.light}`}>LABELS</h2>
-            <div className="flex gap-2 mb-4">
+        <div className={`pixel-border p-3 md:p-4 ${bg.secondary} ${theme.border}`}>
+            <h2 className={`pixel-text mb-3 md:mb-4 text-xs md:text-base ${theme.light}`}>LABELS</h2>
+            <div className="flex flex-col sm:flex-row gap-2 mb-3 md:mb-4">
                 <input
                     type="text"
                     value={newLabel}
@@ -23,7 +23,7 @@ const LabelManager = ({ labels, onAdd, onDelete, theme, bg, textColor }) => {
                 />
                 <button
                     onClick={handleAdd}
-                    className={`pixel-button ${theme.button} ${theme.hover} text-white px-4 py-2`}
+                    className={`pixel-button ${theme.button} ${theme.hover} text-white px-4 py-2 w-full sm:w-auto`}
                 >
                     ADD
                 </button>
@@ -32,12 +32,12 @@ const LabelManager = ({ labels, onAdd, onDelete, theme, bg, textColor }) => {
                 {labels.map((label) => (
                     <div
                         key={label.name}
-                        className={`flex items-center gap-2 ${bg.tertiary} px-3 py-2 pixel-border ${theme.border}`}
+                        className={`flex items-center gap-2 ${bg.tertiary} px-2 md:px-3 py-1 md:py-2 pixel-border ${theme.border}`}
                     >
-                        <span className={`pixel-text text-xs ${textColor}`}>{label.name}</span>
+                        <span className={`pixel-text text-xs ${textColor} break-all`}>{label.name}</span>
                         <button
                             onClick={() => onDelete(label.name)}
-                            className="text-red-400 hover:text-red-300 pixel-text text-xs"
+                            className="text-red-400 hover:text-red-300 pixel-text text-xs flex-shrink-0"
                         >
                             X
                         </button>

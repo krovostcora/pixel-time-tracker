@@ -9,6 +9,7 @@ import LabelManager from './components/Tracker/LabelManager';
 import LabelSelector from './components/Tracker/LabelSelector';
 import ActiveTask from './components/Tracker/ActiveTask';
 import PausedTasks from './components/Tracker/PausedTasks';
+import GifDisplay from './components/Tracker/GifDisplay';
 import LogsView from './components/Logs/LogsView';
 import './index.css';
 
@@ -22,15 +23,42 @@ function App() {
     const [pausedTasks, setPausedTasks] = useState([]);
     const [currentTime, setCurrentTime] = useState(0);
     const [view, setView] = useState('tracker');
-    const [brightness, setBrightness] = useState(100);
-    const [bgTheme, setBgTheme] = useState('black');
-    const [accentColor, setAccentColor] = useState('purple');
+
+    const [brightness, setBrightness] = useState(() => {
+        const saved = localStorage.getItem('brightness');
+        return saved ? Number(saved) : 100;
+    });
+    const [bgTheme, setBgTheme] = useState(() => {
+        return localStorage.getItem('bgTheme') || 'black';
+    });
+    const [accentColor, setAccentColor] = useState(() => {
+        return localStorage.getItem('accentColor') || 'purple';
+    });
+    const [selectedGif, setSelectedGif] = useState(() => {
+        return localStorage.getItem('selectedGif') || 'none';
+    });
 
     const intervalRef = useRef(null);
 
     const theme = THEMES.accent[accentColor];
     const bg = THEMES.bg[bgTheme];
     const textColor = getTextColor(bgTheme, theme);
+
+    useEffect(() => {
+        localStorage.setItem('brightness', brightness);
+    }, [brightness]);
+
+    useEffect(() => {
+        localStorage.setItem('bgTheme', bgTheme);
+    }, [bgTheme]);
+
+    useEffect(() => {
+        localStorage.setItem('accentColor', accentColor);
+    }, [accentColor]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedGif', selectedGif);
+    }, [selectedGif]);
 
     useEffect(() => {
         if (activeTask && activeTask.startTime) {
@@ -139,7 +167,7 @@ function App() {
 
     return (
         <div
-            className={`min-h-screen ${bg.main} ${textColor} p-4`}
+            className={`min-h-screen ${bg.main} ${textColor} p-3 md:p-4`}
             style={{ filter: `brightness(${brightness}%)` }}
         >
             <style>{`
@@ -149,6 +177,7 @@ function App() {
           font-family: 'Press Start 2P', cursive;
           font-size: 12px;
           text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+          line-height: 1.5;
         }
         
         .pixel-border {
@@ -173,6 +202,15 @@ function App() {
           opacity: 0.5;
           cursor: not-allowed;
         }
+
+        @media (max-width: 640px) {
+          .pixel-text {
+            font-size: 10px;
+          }
+          .pixel-button {
+            font-size: 8px;
+          }
+        }
       `}</style>
 
             <div className="max-w-4xl mx-auto">
@@ -184,15 +222,17 @@ function App() {
                     setBgTheme={setBgTheme}
                     accentColor={accentColor}
                     setAccentColor={setAccentColor}
+                    selectedGif={selectedGif}
+                    setSelectedGif={setSelectedGif}
                     theme={theme}
                     bg={bg}
                     textColor={textColor}
                 />
 
-                <div className="flex gap-4 mb-6">
+                <div className="flex gap-2 md:gap-4 mb-4 md:mb-6">
                     <button
                         onClick={() => setView('tracker')}
-                        className={`pixel-button px-4 py-2 ${
+                        className={`pixel-button px-3 md:px-4 py-2 flex-1 ${
                             view === 'tracker'
                                 ? `${theme.button} text-white`
                                 : `${bg.secondary} ${textColor}`
@@ -202,7 +242,7 @@ function App() {
                     </button>
                     <button
                         onClick={() => setView('logs')}
-                        className={`pixel-button px-4 py-2 ${
+                        className={`pixel-button px-3 md:px-4 py-2 flex-1 ${
                             view === 'logs'
                                 ? `${theme.button} text-white`
                                 : `${bg.secondary} ${textColor}`
@@ -213,7 +253,7 @@ function App() {
                 </div>
 
                 {view === 'tracker' ? (
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                         <LabelManager
                             labels={getSortedLabels()}
                             onAdd={addLabel}
@@ -222,6 +262,14 @@ function App() {
                             bg={bg}
                             textColor={textColor}
                         />
+
+                        {!activeTask && pausedTasks.length === 0 && (
+                            <GifDisplay
+                                selectedGif={selectedGif}
+                                theme={theme}
+                                bg={bg}
+                            />
+                        )}
 
                         {!activeTask && (
                             <LabelSelector
@@ -236,16 +284,23 @@ function App() {
                         )}
 
                         {activeTask && (
-                            <ActiveTask
-                                task={activeTask}
-                                currentTime={currentTime}
-                                onPause={pauseTask}
-                                onStop={stopTask}
-                                onCancel={cancelTask}
-                                theme={theme}
-                                bg={bg}
-                                textColor={textColor}
-                            />
+                            <>
+                                <GifDisplay
+                                    selectedGif={selectedGif}
+                                    theme={theme}
+                                    bg={bg}
+                                />
+                                <ActiveTask
+                                    task={activeTask}
+                                    currentTime={currentTime}
+                                    onPause={pauseTask}
+                                    onStop={stopTask}
+                                    onCancel={cancelTask}
+                                    theme={theme}
+                                    bg={bg}
+                                    textColor={textColor}
+                                />
+                            </>
                         )}
 
                         <PausedTasks

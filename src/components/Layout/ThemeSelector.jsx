@@ -12,8 +12,8 @@ const ThemeSelector = ({
                            textColor
                        }) => {
     return (
-        <>
-            <div className="flex items-center gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="flex flex-col gap-2">
                 <span className="pixel-text text-xs">DIM</span>
                 <input
                     type="range"
@@ -21,31 +21,39 @@ const ThemeSelector = ({
                     max="100"
                     value={brightness}
                     onChange={(e) => setBrightness(Number(e.target.value))}
-                    className="w-24"
+                    className="w-full"
                 />
             </div>
-            <select
-                value={bgTheme}
-                onChange={(e) => setBgTheme(e.target.value)}
-                className={`${bg.secondary} border-2 ${theme.border} px-2 py-1 pixel-text text-xs ${textColor}`}
-            >
-                <option value="black">BLACK BG</option>
-                <option value="white">WHITE BG</option>
-                <option value="gray">GRAY BG</option>
-            </select>
-            <select
-                value={accentColor}
-                onChange={(e) => setAccentColor(e.target.value)}
-                className={`${bg.secondary} border-2 ${theme.border} px-2 py-1 pixel-text text-xs ${textColor}`}
-            >
-                <option value="purple">PURPLE</option>
-                <option value="blue">BLUE</option>
-                <option value="green">GREEN</option>
-                <option value="red">RED</option>
-                <option value="yellow">YELLOW</option>
-                <option value="dark">DARK</option>
-            </select>
-        </>
+
+            <div className="flex flex-col gap-2">
+                <span className="pixel-text text-xs">BACKGROUND</span>
+                <select
+                    value={bgTheme}
+                    onChange={(e) => setBgTheme(e.target.value)}
+                    className={`${bg.secondary} border-2 ${theme.border} px-2 py-1 pixel-text text-xs ${textColor} w-full`}
+                >
+                    <option value="black">BLACK</option>
+                    <option value="white">WHITE</option>
+                    <option value="gray">GRAY</option>
+                </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <span className="pixel-text text-xs">ACCENT</span>
+                <select
+                    value={accentColor}
+                    onChange={(e) => setAccentColor(e.target.value)}
+                    className={`${bg.secondary} border-2 ${theme.border} px-2 py-1 pixel-text text-xs ${textColor} w-full`}
+                >
+                    <option value="purple">PURPLE</option>
+                    <option value="blue">BLUE</option>
+                    <option value="green">GREEN</option>
+                    <option value="red">RED</option>
+                    <option value="yellow">YELLOW</option>
+                    <option value="dark">DARK</option>
+                </select>
+            </div>
+        </div>
     );
 };
 
