@@ -16,7 +16,7 @@ import './index.css';
 function App() {
     const { user, login, logout } = useAuth();
     const { labels, addLabel, deleteLabel, updateLabelUsage, getSortedLabels } = useLabels(user);
-    const { logs, addLog, deleteLog, updateLogLabels, getTotalTimeForLabels } = useLogs(user);
+    const { logs, addLog, deleteLog, updateLogLabels, updateLogDuration, renameLabel, deleteAllLogsWithLabel, getTotalTimeForLabels } = useLogs(user);
 
     const [selectedLabels, setSelectedLabels] = useState([]);
     const [activeTask, setActiveTask] = useState(null);
@@ -103,7 +103,8 @@ function App() {
             labels: [...selectedLabels],
             startTime: Date.now(),
             elapsedSeconds: 0,
-            totalPreviousTime: totalTime
+            totalPreviousTime: totalTime,
+            sessions: []
         });
         setCurrentTime(0);
         setSelectedLabels([]);
@@ -115,10 +116,23 @@ function App() {
         const elapsed = Math.floor((Date.now() - activeTask.startTime) / 1000);
         const totalElapsed = activeTask.elapsedSeconds + elapsed;
 
+        let updatedSessions = [...(activeTask.sessions || [])];
+        if (elapsed >= 60) {
+            const sessionDate = new Date(activeTask.startTime).toISOString().split('T')[0];
+            const existingSessionIndex = updatedSessions.findIndex(s => s.date === sessionDate);
+
+            if (existingSessionIndex >= 0) {
+                updatedSessions[existingSessionIndex].duration += elapsed;
+            } else {
+                updatedSessions.push({ date: sessionDate, duration: elapsed });
+            }
+        }
+
         setPausedTasks([...pausedTasks, {
             ...activeTask,
             elapsedSeconds: totalElapsed,
-            startTime: null
+            startTime: null,
+            sessions: updatedSessions
         }]);
 
         setActiveTask(null);
@@ -138,9 +152,23 @@ function App() {
         if (!activeTask) return;
 
         const elapsed = Math.floor((Date.now() - activeTask.startTime) / 1000);
-        const totalElapsed = activeTask.elapsedSeconds + elapsed;
 
-        await addLog(activeTask.labels, totalElapsed);
+        let finalSessions = [...(activeTask.sessions || [])];
+        if (elapsed >= 60) {
+            const sessionDate = new Date(activeTask.startTime).toISOString().split('T')[0];
+            const existingSessionIndex = finalSessions.findIndex(s => s.date === sessionDate);
+
+            if (existingSessionIndex >= 0) {
+                finalSessions[existingSessionIndex].duration += elapsed;
+            } else {
+                finalSessions.push({ date: sessionDate, duration: elapsed });
+            }
+        }
+
+        if (finalSessions.length > 0) {
+            await addLog(activeTask.labels, finalSessions);
+        }
+
         setActiveTask(null);
         setCurrentTime(0);
     };
@@ -319,6 +347,9 @@ function App() {
                         labels={labels}
                         onDeleteLog={deleteLog}
                         onUpdateLogLabels={updateLogLabels}
+                        onUpdateLogDuration={updateLogDuration}
+                        onRenameLabel={renameLabel}
+                        onDeleteAllLogsWithLabel={deleteAllLogsWithLabel}
                         theme={theme}
                         bg={bg}
                         textColor={textColor}

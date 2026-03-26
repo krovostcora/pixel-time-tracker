@@ -6,12 +6,18 @@ const LogEntry = ({
                       labels,
                       onDelete,
                       onUpdateLabels,
+                      onUpdateDuration,
                       theme,
                       bg,
                       textColor
                   }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editLabels, setEditLabels] = useState(task.labels);
+    const [editTime, setEditTime] = useState('');
+
+    const getDuration = () => {
+        return task.totalDuration || task.duration || 0;
+    };
 
     const toggleEditLabel = (labelName) => {
         if (editLabels.includes(labelName)) {
@@ -21,8 +27,27 @@ const LogEntry = ({
         }
     };
 
+    const startEdit = () => {
+        setEditLabels(task.labels);
+        setEditTime(formatTime(getDuration(), true));
+        setIsEditing(true);
+    };
+
     const saveEdit = () => {
         onUpdateLabels(task.id, editLabels);
+
+        const timeParts = editTime.split(':');
+        if (timeParts.length === 3) {
+            const hours = parseInt(timeParts[0]) || 0;
+            const minutes = parseInt(timeParts[1]) || 0;
+            const seconds = parseInt(timeParts[2]) || 0;
+            const newDuration = hours * 3600 + minutes * 60 + seconds;
+
+            if (newDuration !== getDuration()) {
+                onUpdateDuration(task.id, newDuration);
+            }
+        }
+
         setIsEditing(false);
     };
 
@@ -44,6 +69,15 @@ const LogEntry = ({
                                 {label.name}
                             </button>
                         ))}
+                    </div>
+                    <div className="mb-2">
+                        <input
+                            type="text"
+                            value={editTime}
+                            onChange={(e) => setEditTime(e.target.value)}
+                            placeholder="HH:MM:SS"
+                            className={`w-full ${bg.main} border-2 ${theme.border} px-2 py-1 pixel-text text-xs ${textColor}`}
+                        />
                     </div>
                     <div className="flex gap-2">
                         <button
@@ -74,10 +108,10 @@ const LogEntry = ({
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
             <span className={`pixel-text text-xs ${theme.light}`}>
-              {formatTime(task.duration, true)}
+              {formatTime(getDuration(), true)}
             </span>
                         <button
-                            onClick={() => setIsEditing(true)}
+                            onClick={startEdit}
                             className={`pixel-button ${theme.button} text-white px-2 py-1 text-xs`}
                         >
                             EDIT

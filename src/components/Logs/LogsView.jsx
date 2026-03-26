@@ -8,6 +8,9 @@ const LogsView = ({
                       labels,
                       onDeleteLog,
                       onUpdateLogLabels,
+                      onUpdateLogDuration,
+                      onRenameLabel,
+                      onDeleteAllLogsWithLabel,
                       theme,
                       bg,
                       textColor
@@ -25,35 +28,73 @@ const LogsView = ({
         const grouped = {};
 
         filtered.forEach(log => {
-            const date = log.endTime.toDate();
-            let key;
+            if (log.sessions && log.sessions.length > 0) {
+                log.sessions.forEach(session => {
+                    const date = new Date(session.date);
+                    let key;
 
-            if (groupBy === 'day') {
-                const year = date.getFullYear();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const day = date.getDate().toString().padStart(2, '0');
-                key = `${year}-${month}-${day}`;
-            } else if (groupBy === 'week') {
-                const weekStart = new Date(date);
-                const dayOfWeek = weekStart.getDay();
-                const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-                weekStart.setDate(date.getDate() + diff);
-                weekStart.setHours(0, 0, 0, 0);
+                    if (groupBy === 'day') {
+                        const year = date.getFullYear();
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const day = date.getDate().toString().padStart(2, '0');
+                        key = `${year}-${month}-${day}`;
+                    } else if (groupBy === 'week') {
+                        const weekStart = new Date(date);
+                        const dayOfWeek = weekStart.getDay();
+                        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+                        weekStart.setDate(date.getDate() + diff);
+                        weekStart.setHours(0, 0, 0, 0);
 
-                const year = weekStart.getFullYear();
-                const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
-                const day = weekStart.getDate().toString().padStart(2, '0');
-                key = `${year}-${month}-${day}`;
+                        const year = weekStart.getFullYear();
+                        const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
+                        const day = weekStart.getDate().toString().padStart(2, '0');
+                        key = `${year}-${month}-${day}`;
+                    } else {
+                        const year = date.getFullYear();
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        key = `${year}-${month}`;
+                    }
+
+                    if (!grouped[key]) {
+                        grouped[key] = [];
+                    }
+
+                    const existingLog = grouped[key].find(l => l.id === log.id);
+                    if (!existingLog) {
+                        grouped[key].push(log);
+                    }
+                });
             } else {
-                const year = date.getFullYear();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                key = `${year}-${month}`;
-            }
+                const date = log.endTime.toDate();
+                let key;
 
-            if (!grouped[key]) {
-                grouped[key] = [];
+                if (groupBy === 'day') {
+                    const year = date.getFullYear();
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const day = date.getDate().toString().padStart(2, '0');
+                    key = `${year}-${month}-${day}`;
+                } else if (groupBy === 'week') {
+                    const weekStart = new Date(date);
+                    const dayOfWeek = weekStart.getDay();
+                    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+                    weekStart.setDate(date.getDate() + diff);
+                    weekStart.setHours(0, 0, 0, 0);
+
+                    const year = weekStart.getFullYear();
+                    const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
+                    const day = weekStart.getDate().toString().padStart(2, '0');
+                    key = `${year}-${month}-${day}`;
+                } else {
+                    const year = date.getFullYear();
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    key = `${year}-${month}`;
+                }
+
+                if (!grouped[key]) {
+                    grouped[key] = [];
+                }
+                grouped[key].push(log);
             }
-            grouped[key].push(log);
         });
 
         const sortedEntries = Object.entries(grouped).sort((a, b) => {
@@ -79,7 +120,7 @@ const LogsView = ({
             const weekEnd = new Date(weekStart);
             weekEnd.setDate(weekStart.getDate() + 6);
 
-            return `Week: ${weekStart.toLocaleDateString('uk-UA', {
+            return `Тиждень: ${weekStart.toLocaleDateString('uk-UA', {
                 day: 'numeric',
                 month: 'short'
             })} - ${weekEnd.toLocaleDateString('uk-UA', {
@@ -101,13 +142,15 @@ const LogsView = ({
             <Statistics
                 logs={logs}
                 filterLabel={filterLabel}
+                onRenameLabel={onRenameLabel}
+                onDeleteAllLogsWithLabel={onDeleteAllLogsWithLabel}
                 theme={theme}
                 bg={bg}
                 textColor={textColor}
             />
 
             <div className={`pixel-border p-4 ${bg.secondary} ${theme.border}`}>
-                <div className="flex gap-4 mb-4">
+                <div className="flex flex-col sm:flex-row gap-4 mb-4">
                     <select
                         value={filterLabel}
                         onChange={(e) => setFilterLabel(e.target.value)}
@@ -123,7 +166,7 @@ const LogsView = ({
                     <select
                         value={groupBy}
                         onChange={(e) => setGroupBy(e.target.value)}
-                        className={`${bg.tertiary} border-2 ${theme.border} px-3 py-2 pixel-text text-xs ${textColor}`}
+                        className={`${bg.tertiary} border-2 ${theme.border} px-3 py-2 pixel-text text-xs ${textColor} sm:w-auto w-full`}
                     >
                         <option value="day">DAY</option>
                         <option value="week">WEEK</option>
@@ -137,7 +180,9 @@ const LogsView = ({
                     </div>
                 ) : (
                     Object.entries(getGroupedLogs()).map(([dateKey, tasks]) => {
-                        const totalDuration = tasks.reduce((sum, task) => sum + task.duration, 0);
+                        const totalDuration = tasks.reduce((sum, task) => {
+                            return sum + (task.totalDuration || task.duration || 0);
+                        }, 0);
                         return (
                             <div key={dateKey} className="mb-4">
                                 <div className={`flex justify-between items-center mb-2 p-2 ${bg.tertiary} pixel-border ${theme.border}`}>
@@ -155,6 +200,7 @@ const LogsView = ({
                                         labels={labels}
                                         onDelete={onDeleteLog}
                                         onUpdateLabels={onUpdateLogLabels}
+                                        onUpdateDuration={onUpdateLogDuration}
                                         theme={theme}
                                         bg={bg}
                                         textColor={textColor}

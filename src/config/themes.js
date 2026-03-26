@@ -6,9 +6,9 @@ export const THEMES = {
             tertiary: 'bg-gray-800'
         },
         white: {
-            main: 'bg-white',
+            main: 'bg-gray-50',
             secondary: 'bg-gray-100',
-            tertiary: 'bg-gray-200'
+            tertiary: 'bg-gray-100'
         },
         gray: {
             main: 'bg-gray-800',
