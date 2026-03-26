@@ -1,14 +1,9 @@
 export const THEMES = {
     bg: {
         black: {
-            main: 'bg-black',
+            main: 'bg-gray-950',
             secondary: 'bg-gray-900',
             tertiary: 'bg-gray-800'
-        },
-        white: {
-            main: 'bg-gray-50',
-            secondary: 'bg-gray-100',
-            tertiary: 'bg-gray-100'
         },
         gray: {
             main: 'bg-gray-800',
@@ -61,6 +56,15 @@ export const THEMES = {
             hover: 'hover:bg-yellow-600',
             button: 'bg-yellow-600',
             selected: 'bg-yellow-600'
+        },
+        pink: {
+            light: 'text-pink-300',
+            main: 'bg-pink-700',
+            dark: 'bg-pink-950',
+            border: 'border-pink-700',
+            hover: 'hover:bg-pink-700',
+            button: 'bg-pink-700',
+            selected: 'bg-pink-700'
         },
         dark: {
             light: 'text-gray-400',

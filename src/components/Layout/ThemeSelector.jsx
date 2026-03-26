@@ -18,7 +18,7 @@ const ThemeSelector = ({
                 <input
                     type="range"
                     min="30"
-                    max="100"
+                    max="150"
                     value={brightness}
                     onChange={(e) => setBrightness(Number(e.target.value))}
                     className="w-full"
@@ -33,7 +33,6 @@ const ThemeSelector = ({
                     className={`${bg.secondary} border-2 ${theme.border} px-2 py-1 pixel-text text-xs ${textColor} w-full`}
                 >
                     <option value="black">BLACK</option>
-                    <option value="white">WHITE</option>
                     <option value="gray">GRAY</option>
                 </select>
             </div>
@@ -50,6 +49,7 @@ const ThemeSelector = ({
                     <option value="green">GREEN</option>
                     <option value="red">RED</option>
                     <option value="yellow">YELLOW</option>
+                    <option value="pink">PINK</option>
                     <option value="dark">DARK</option>
                 </select>
             </div>
