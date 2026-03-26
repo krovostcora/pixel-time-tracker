@@ -7,11 +7,11 @@ const GifDisplay = ({ selectedGif, theme, bg }) => {
     if (!gif || !gif.url) return null;
 
     return (
-        <div className={`pixel-border p-4 ${bg.secondary} ${theme.border} overflow-hidden`}>
+        <div className={`pixel-border p-0 ${bg.secondary} ${theme.border} overflow-hidden`}>
             <img
                 src={gif.url}
                 alt={gif.name}
-                className="w-full h-48 md:h-64 object-cover rounded"
+                className="w-full h-80 md:h-50 object-cover rounded"
                 style={{ imageRendering: 'pixelated' }}
             />
         </div>
