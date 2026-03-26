@@ -21,7 +21,7 @@ const Header = ({
     return (
         <div className="mb-6">
             <div className="flex justify-between items-center mb-4">
-                <h1 className={`text-xl md:text-2xl pixel-text ${theme.light}`}>TRACKER</h1>
+                <h1 className={`text-xl md:text-2xl pixel-text ${theme.light}`}>PixeL.TRACKER</h1>
                 <div className="flex gap-2">
                     <button
                         onClick={() => setShowSettings(!showSettings)}
