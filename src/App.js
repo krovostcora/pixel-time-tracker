@@ -16,7 +16,7 @@ import LogsView from './components/Logs/LogsView';
 import './index.css';
 
 function App() {
-    const { user, login, logout } = useAuth();
+    const { user, loading, error, login, logout } = useAuth();
     const { labels, addLabel, deleteLabel, updateLabelUsage, updateLabelGoals, getSortedLabels } = useLabels(user);
     const { logs, addLog, deleteLog, updateLogLabels, updateLogDuration, renameLabel, deleteAllLogsWithLabel, getTotalTimeForLabels } = useLogs(user);
 
@@ -193,6 +193,7 @@ function App() {
         return (
             <LoginScreen
                 onLogin={login}
+                error={error}
                 theme={theme}
                 bg={bg}
                 brightness={brightness}
