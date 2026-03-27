@@ -75,6 +75,9 @@ const LoginScreen = ({ onLogin, theme, bg, brightness }) => {
                     >
                         ▶ GOOGLE LOGIN
                     </button>
+                    <div className={`text-xs ${theme.light} opacity-50 mt-4`}>
+                        If login doesn't work, open the website in regular browser (Safari/Chrome).
+                    </div>
                 </div>
             </div>
         </div>
