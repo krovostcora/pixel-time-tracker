@@ -111,7 +111,7 @@ const LogsView = ({
 
         if (groupBy === 'day') {
             const date = new Date(year, month - 1, day);
-            return date.toLocaleDateString('uk-UA', {
+            return date.toLocaleDateString('en-GB', {
                 weekday: 'short',
                 year: 'numeric',
                 month: 'long',
@@ -122,17 +122,17 @@ const LogsView = ({
             const weekEnd = new Date(weekStart);
             weekEnd.setDate(weekStart.getDate() + 6);
 
-            return `Тиждень: ${weekStart.toLocaleDateString('uk-UA', {
+            return `Тиждень: ${weekStart.toLocaleDateString('en-GB', {
                 day: 'numeric',
                 month: 'short'
-            })} - ${weekEnd.toLocaleDateString('uk-UA', {
+            })} - ${weekEnd.toLocaleDateString('en-GB', {
                 day: 'numeric',
                 month: 'short',
                 year: 'numeric'
             })}`;
         } else {
             const date = new Date(year, month - 1, 1);
-            return date.toLocaleDateString('uk-UA', {
+            return date.toLocaleDateString('en-GB', {
                 year: 'numeric',
                 month: 'long'
             });

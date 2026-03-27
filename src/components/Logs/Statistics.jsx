@@ -115,10 +115,10 @@ const Statistics = ({ logs, filterLabel, onRenameLabel, onDeleteAllLogsWithLabel
             startOfWeek.setDate(selectedDate.getDate() + diff);
             const endOfWeek = new Date(startOfWeek);
             endOfWeek.setDate(startOfWeek.getDate() + 6);
-            return `${startOfWeek.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })} – ${endOfWeek.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+            return `${startOfWeek.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} – ${endOfWeek.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
         }
 
-        return selectedDate.toLocaleDateString('uk-UA', { month: 'long', year: 'numeric' });
+        return selectedDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
     };
 
     const handleLabelClick = (label) => {
