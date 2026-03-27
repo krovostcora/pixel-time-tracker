@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/pixel-time-tracker/static/css/main.837828e3.css",
-    "main.js": "/pixel-time-tracker/static/js/main.c01cb5f8.js",
+    "main.css": "/pixel-time-tracker/static/css/main.620b7439.css",
+    "main.js": "/pixel-time-tracker/static/js/main.178aeeb4.js",
     "index.html": "/pixel-time-tracker/index.html",
-    "main.837828e3.css.map": "/pixel-time-tracker/static/css/main.837828e3.css.map",
-    "main.c01cb5f8.js.map": "/pixel-time-tracker/static/js/main.c01cb5f8.js.map"
+    "main.620b7439.css.map": "/pixel-time-tracker/static/css/main.620b7439.css.map",
+    "main.178aeeb4.js.map": "/pixel-time-tracker/static/js/main.178aeeb4.js.map"
   },
   "entrypoints": [
-    "static/css/main.837828e3.css",
-    "static/js/main.c01cb5f8.js"
+    "static/css/main.620b7439.css",
+    "static/js/main.178aeeb4.js"
   ]
 }
