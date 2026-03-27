@@ -11,6 +11,7 @@ const LogsView = ({
                       onUpdateLogDuration,
                       onRenameLabel,
                       onDeleteAllLogsWithLabel,
+                      onUpdateGoals,
                       theme,
                       bg,
                       textColor
@@ -28,6 +29,7 @@ const LogsView = ({
         const grouped = {};
 
         filtered.forEach(log => {
+            // Якщо є сесії, групуємо по датах сесій
             if (log.sessions && log.sessions.length > 0) {
                 log.sessions.forEach(session => {
                     const date = new Date(session.date);
@@ -144,6 +146,8 @@ const LogsView = ({
                 filterLabel={filterLabel}
                 onRenameLabel={onRenameLabel}
                 onDeleteAllLogsWithLabel={onDeleteAllLogsWithLabel}
+                onUpdateGoals={onUpdateGoals}
+                labels={labels}
                 theme={theme}
                 bg={bg}
                 textColor={textColor}

@@ -28,7 +28,13 @@ export const useLabels = (user) => {
             const newLabel = {
                 name: name.trim(),
                 createdAt: Date.now(),
-                lastUsed: null
+                lastUsed: null,
+                goals: {
+                    daily: null,
+                    weekly: null,
+                    monthly: null,
+                    total: null
+                }
             };
             saveLabels([...labels, newLabel]);
             return true;
@@ -44,6 +50,22 @@ export const useLabels = (user) => {
         const updatedLabels = labels.map(label => {
             if (labelNames.includes(label.name)) {
                 return { ...label, lastUsed: Date.now() };
+            }
+            return label;
+        });
+        saveLabels(updatedLabels);
+    };
+
+    const updateLabelGoals = (labelName, goals) => {
+        const updatedLabels = labels.map(label => {
+            if (label.name === labelName) {
+                return {
+                    ...label,
+                    goals: {
+                        ...label.goals,
+                        ...goals
+                    }
+                };
             }
             return label;
         });
@@ -67,6 +89,7 @@ export const useLabels = (user) => {
         addLabel,
         deleteLabel,
         updateLabelUsage,
+        updateLabelGoals,
         getSortedLabels
     };
 };

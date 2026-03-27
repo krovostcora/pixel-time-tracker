@@ -10,12 +10,14 @@ import LabelSelector from './components/Tracker/LabelSelector';
 import ActiveTask from './components/Tracker/ActiveTask';
 import PausedTasks from './components/Tracker/PausedTasks';
 import GifDisplay from './components/Tracker/GifDisplay';
+import GoalProgress from './components/Goals/GoalProgress';
+import GoalsView from './components/Goals/GoalsView';
 import LogsView from './components/Logs/LogsView';
 import './index.css';
 
 function App() {
     const { user, login, logout } = useAuth();
-    const { labels, addLabel, deleteLabel, updateLabelUsage, getSortedLabels } = useLabels(user);
+    const { labels, addLabel, deleteLabel, updateLabelUsage, updateLabelGoals, getSortedLabels } = useLabels(user);
     const { logs, addLog, deleteLog, updateLogLabels, updateLogDuration, renameLabel, deleteAllLogsWithLabel, getTotalTimeForLabels } = useLogs(user);
 
     const [selectedLabels, setSelectedLabels] = useState([]);
@@ -24,6 +26,7 @@ function App() {
     const [currentTime, setCurrentTime] = useState(0);
     const [view, setView] = useState('tracker');
 
+    // Завантаження налаштувань з localStorage
     const [brightness, setBrightness] = useState(() => {
         const saved = localStorage.getItem('brightness');
         return saved ? Number(saved) : 100;
@@ -44,6 +47,7 @@ function App() {
     const bg = THEMES.bg[bgTheme];
     const textColor = getTextColor(bgTheme, theme);
 
+    // Збереження налаштувань при зміні
     useEffect(() => {
         localStorage.setItem('brightness', brightness);
     }, [brightness]);
@@ -104,7 +108,7 @@ function App() {
             startTime: Date.now(),
             elapsedSeconds: 0,
             totalPreviousTime: totalTime,
-            sessions: []
+            sessions: [] // Відстеження сесій по днях
         });
         setCurrentTime(0);
         setSelectedLabels([]);
@@ -116,6 +120,7 @@ function App() {
         const elapsed = Math.floor((Date.now() - activeTask.startTime) / 1000);
         const totalElapsed = activeTask.elapsedSeconds + elapsed;
 
+        // Додаємо сесію тільки якщо працювали >= 60 секунд
         let updatedSessions = [...(activeTask.sessions || [])];
         if (elapsed >= 60) {
             const sessionDate = new Date(activeTask.startTime).toISOString().split('T')[0];
@@ -153,6 +158,7 @@ function App() {
 
         const elapsed = Math.floor((Date.now() - activeTask.startTime) / 1000);
 
+        // Додаємо фінальну сесію тільки якщо >= 60 секунд
         let finalSessions = [...(activeTask.sessions || [])];
         if (elapsed >= 60) {
             const sessionDate = new Date(activeTask.startTime).toISOString().split('T')[0];
@@ -165,6 +171,7 @@ function App() {
             }
         }
 
+        // Зберігаємо тільки якщо є хоча б одна сесія
         if (finalSessions.length > 0) {
             await addLog(activeTask.labels, finalSessions);
         }
@@ -269,6 +276,16 @@ function App() {
                         TRACKER
                     </button>
                     <button
+                        onClick={() => setView('goals')}
+                        className={`pixel-button px-3 md:px-4 py-2 flex-1 ${
+                            view === 'goals'
+                                ? `${theme.button} text-white`
+                                : `${bg.secondary} ${textColor}`
+                        }`}
+                    >
+                        GOALS
+                    </button>
+                    <button
                         onClick={() => setView('logs')}
                         className={`pixel-button px-3 md:px-4 py-2 flex-1 ${
                             view === 'logs'
@@ -292,11 +309,33 @@ function App() {
                         />
 
                         {!activeTask && pausedTasks.length === 0 && (
-                            <GifDisplay
-                                selectedGif={selectedGif}
-                                theme={theme}
-                                bg={bg}
-                            />
+                            <>
+                                <GifDisplay
+                                    selectedGif={selectedGif}
+                                    theme={theme}
+                                    bg={bg}
+                                />
+                                {selectedLabels.map(labelName => {
+                                    const label = labels.find(l => l.name === labelName);
+                                    if (!label) return null;
+                                    return (
+                                        <GoalProgress
+                                            key={labelName}
+                                            label={label}
+                                            logs={logs}
+                                            onDeleteGoal={(name, type) => {
+                                                const l = labels.find(lb => lb.name === name);
+                                                if (!l) return;
+                                                const updatedGoals = { ...l.goals, [type]: null };
+                                                updateLabelGoals(name, updatedGoals);
+                                            }}
+                                            theme={theme}
+                                            bg={bg}
+                                            textColor={textColor}
+                                        />
+                                    );
+                                })}
+                            </>
                         )}
 
                         {!activeTask && (
@@ -305,6 +344,7 @@ function App() {
                                 selectedLabels={selectedLabels}
                                 onToggle={toggleLabel}
                                 onStart={startTask}
+                                onUpdateGoals={updateLabelGoals}
                                 theme={theme}
                                 bg={bg}
                                 textColor={textColor}
@@ -341,6 +381,15 @@ function App() {
                             textColor={textColor}
                         />
                     </div>
+                ) : view === 'goals' ? (
+                    <GoalsView
+                        labels={labels}
+                        logs={logs}
+                        onUpdateGoals={updateLabelGoals}
+                        theme={theme}
+                        bg={bg}
+                        textColor={textColor}
+                    />
                 ) : (
                     <LogsView
                         logs={logs}
@@ -350,6 +399,7 @@ function App() {
                         onUpdateLogDuration={updateLogDuration}
                         onRenameLabel={renameLabel}
                         onDeleteAllLogsWithLabel={deleteAllLogsWithLabel}
+                        onUpdateGoals={updateLabelGoals}
                         theme={theme}
                         bg={bg}
                         textColor={textColor}

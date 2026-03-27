@@ -1,10 +1,12 @@
 import React from 'react';
+import GoalSetter from '../Goals/GoalSetter';
 
 const LabelSelector = ({
                            labels,
                            selectedLabels,
                            onToggle,
                            onStart,
+                           onUpdateGoals,
                            theme,
                            bg,
                            textColor
@@ -27,13 +29,23 @@ const LabelSelector = ({
                     </button>
                 ))}
             </div>
-            <button
-                onClick={onStart}
-                disabled={selectedLabels.length === 0}
-                className="pixel-button bg-green-700 hover:bg-green-600 text-white px-6 py-3 w-full"
-            >
-                START
-            </button>
+            <div className="flex gap-2">
+                <button
+                    onClick={onStart}
+                    disabled={selectedLabels.length === 0}
+                    className="pixel-button bg-green-700 hover:bg-green-600 text-white px-6 py-3 flex-1"
+                >
+                    START
+                </button>
+                <GoalSetter
+                    selectedLabels={selectedLabels}
+                    labels={labels}
+                    onUpdateGoals={onUpdateGoals}
+                    theme={theme}
+                    bg={bg}
+                    textColor={textColor}
+                />
+            </div>
         </div>
     );
 };

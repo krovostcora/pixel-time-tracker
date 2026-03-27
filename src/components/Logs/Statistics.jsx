@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { formatTime } from '../../utils/timeUtils';
 
-const Statistics = ({ logs, filterLabel, onRenameLabel, onDeleteAllLogsWithLabel, theme, bg, textColor }) => {
+const Statistics = ({ logs, filterLabel, onRenameLabel, onDeleteAllLogsWithLabel, onUpdateGoals, labels, theme, bg, textColor }) => {
     const [viewMode, setViewMode] = useState('all');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [expandedLabel, setExpandedLabel] = useState(null);
@@ -141,7 +141,7 @@ const Statistics = ({ logs, filterLabel, onRenameLabel, onDeleteAllLogsWithLabel
     };
 
     const handleDeleteAll = async () => {
-        if (window.confirm(`Delete all logs with label: "${expandedLabel}"?`)) {
+        if (window.confirm(`Видалити всі записи з лейблом "${expandedLabel}"?`)) {
             await onDeleteAllLogsWithLabel(expandedLabel);
         }
         setExpandedLabel(null);
@@ -209,18 +209,14 @@ const Statistics = ({ logs, filterLabel, onRenameLabel, onDeleteAllLogsWithLabel
                                 {/* Label row */}
                                 <div
                                     onClick={() => viewMode === 'all' && handleLabelClick(label)}
-                                    className={`relative flex justify-between items-center p-2 transition-all ${
+                                    className={`relative flex justify-between items-center p-2 transition-all overflow-hidden ${
                                         viewMode === 'all' ? 'cursor-pointer' : ''
                                     } ${isExpanded ? `${theme.selected} bg-opacity-20` : `${bg.tertiary} hover:opacity-90`}`}
-                                    style={{ overflow: 'hidden' }}
                                 >
-                                    {/* Background bar */}
+                                    {/* Background progress bar */}
                                     <div
                                         className="absolute left-0 top-0 h-full opacity-10"
-                                        style={{
-                                            width: `${barWidth}%`,
-                                            backgroundColor: 'currentColor',
-                                        }}
+                                        style={{ width: `${barWidth}%`, backgroundColor: 'currentColor' }}
                                     />
                                     <div className="relative flex items-center gap-2 flex-1 min-w-0">
                                         {viewMode === 'all' && (
@@ -237,9 +233,9 @@ const Statistics = ({ logs, filterLabel, onRenameLabel, onDeleteAllLogsWithLabel
                                     </span>
                                 </div>
 
-                                {/* Expanded actions */}
+                                {/* Expanded actions — no border, no pixel-border, blends into bg.main */}
                                 {isExpanded && (
-                                    <div className={`${bg.main} px-3 py-2 flex flex-col gap-2`}>
+                                    <div className={`${bg.main} px-3 py-2`}>
                                         {isRenaming ? (
                                             <div className="flex gap-2 items-center">
                                                 <input
